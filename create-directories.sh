@@ -1,0 +1,1 @@
+mkdir -p seattle-coffee-app/src/{components,pages,services,styles} 
