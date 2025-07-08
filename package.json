@@ -3,33 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@playwright/test": "^1.50.1",
-    "@react-google-maps/api": "^2.20.6",
-    "@shadcn/ui": "^0.0.4",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.7.9",
-    "cheerio": "^1.0.0",
     "lucide-react": "^0.475.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "scrape": "node scripts/jetStoreScraper.js",
-    "process": "node scripts/processStores.js"
+    "dev": "react-scripts start",
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -45,17 +31,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.26.3",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      ["@babel/preset-react", {
-        "runtime": "automatic"
-      }]
-    ]
+    "tailwindcss": "^3.4.17"
   }
 }

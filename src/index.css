@@ -1,3 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Roboto+Slab:wght@400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-bronze: #b07a5c;
+  --color-blue: #001e60;
+  --color-white: #fff;
+  --color-egg-shell: #f6f5f3;
+  --color-blue-fifty: rgba(0, 30, 96, 0.5);
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-blue);
+  background-color: var(--color-egg-shell);
+  line-height: 1.5;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-bronze text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-brand-blue text-white px-4 py-2 rounded hover:bg-opacity-90 transition-colors;
+  }
+
+  .heading-1 {
+    @apply font-roboto text-3xl font-semibold text-brand-blue;
+  }
+
+  .heading-2 {
+    @apply font-roboto text-2xl font-medium text-brand-blue;
+  }
+
+  /* Text clamping utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Mobile scroll improvements */
+  .overflow-scroll-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Smooth transitions */
+  .transition-all {
+    transition: all 0.2s ease-in-out;
+  }
+}

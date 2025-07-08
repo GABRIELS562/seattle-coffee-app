@@ -1,0 +1,135 @@
+// Fallback store data for when the main database isn't available
+export const stores = [
+  {
+    id: 1,
+    name: "Twenty on Vineyard",
+    address: "20 Vineyard Rd, Claremont, Cape Town, 7708",
+    province: "Western Cape",
+    country: "South Africa",
+    category: "cafe",
+    coordinates: { lat: -33.9793815, lng: 18.4614803 },
+    mapUrl: "https://www.google.com/maps/place/20+Vineyard+Rd,+Claremont,+Cape+Town,+7708/@-33.9793815,18.4614803,17z",
+    hours: "Mon-Sun: 6:00 AM - 6:00 PM",
+    phone: "+27 21 671 1234",
+    hasCoordinates: true
+  },
+  {
+    id: 2,
+    name: "45th Cutting FreshStop",
+    address: "928 King Cetshwayo Hwy, Sherwood, Durban, 4091",
+    province: "KwaZulu-Natal",
+    country: "South Africa",
+    category: "freshstop",
+    coordinates: { lat: -29.8328006, lng: 30.9670958 },
+    mapUrl: "https://www.google.com/maps/place/FreshStop+at+Caltex+45th+Cutting/@-29.8328006,30.9670958,17z",
+    hours: "Mon-Sun: 5:00 AM - 10:00 PM",
+    phone: "+27 31 463 1234",
+    hasCoordinates: true
+  },
+  {
+    id: 3,
+    name: "A Club FreshStop",
+    address: "Gauteng, South Africa",
+    province: "Gauteng",
+    country: "South Africa",
+    category: "freshstop",
+    coordinates: { lat: -25.7602088, lng: 28.2444596 },
+    mapUrl: "https://www.google.com/maps/place/FreshStop+at+Caltex+A+Club+Motors/@-25.7602088,28.2444596,18.1z",
+    hours: "Mon-Sun: 5:00 AM - 10:00 PM",
+    phone: "+27 11 234 5678",
+    hasCoordinates: true
+  },
+  {
+    id: 4,
+    name: "Access Retail Park",
+    address: "Port Elizabeth, Eastern Cape",
+    province: "Eastern Cape",
+    country: "South Africa",
+    category: "shopping_center",
+    coordinates: { lat: -33.991283, lng: 25.5475841 },
+    mapUrl: "https://www.google.com/maps/place/FNB+Bank+ATM+Access+Retail+Park/@-33.991283,25.5475841,17z",
+    hours: "Mon-Sun: 8:00 AM - 8:00 PM",
+    phone: "+27 41 123 4567",
+    hasCoordinates: true
+  },
+  {
+    id: 5,
+    name: "Airport City FreshStop",
+    address: "Cnr Borcherds Quarry Road, Montreal Drive, Airport City Precinct Cape Town 7525",
+    province: "Western Cape",
+    country: "South Africa",
+    category: "freshstop",
+    coordinates: { lat: -33.9735889, lng: 18.5853692 },
+    mapUrl: "https://www.google.com/maps/place/FreshStop+Airport+City/@-33.9735889,18.5853692,16z",
+    hours: "Mon-Sun: 5:00 AM - 11:00 PM",
+    phone: "+27 21 556 7890",
+    hasCoordinates: true
+  },
+  {
+    id: 6,
+    name: "Canal Walk Seattle Coffee",
+    address: "Canal Walk Shopping Centre, Century City, Cape Town",
+    province: "Western Cape",
+    country: "South Africa",
+    category: "cafe",
+    coordinates: { lat: -33.896507, lng: 18.5106523 },
+    mapUrl: "https://www.google.com/maps/search/canal+walk/@-33.8931848,18.5092182,17z",
+    hours: "Mon-Sun: 9:00 AM - 9:00 PM",
+    phone: "+27 21 555 0123",
+    hasCoordinates: true
+  },
+  {
+    id: 7,
+    name: "Johannesburg CBD Seattle Coffee",
+    address: "Johannesburg CBD, Gauteng",
+    province: "Gauteng",
+    country: "South Africa",
+    category: "cafe",
+    coordinates: { lat: -26.2041, lng: 28.0473 },
+    mapUrl: "https://www.google.com/maps/@-26.2041,28.0473,15z",
+    hours: "Mon-Fri: 6:30 AM - 7:00 PM, Sat-Sun: 8:00 AM - 6:00 PM",
+    phone: "+27 11 123 4567",
+    hasCoordinates: true
+  },
+  {
+    id: 8,
+    name: "Durban Beachfront Cafe",
+    address: "Durban Beachfront, KwaZulu-Natal",
+    province: "KwaZulu-Natal",
+    country: "South Africa",
+    category: "cafe",
+    coordinates: { lat: -29.8587, lng: 31.0218 },
+    mapUrl: "https://www.google.com/maps/@-29.8587,31.0218,15z",
+    hours: "Mon-Sun: 6:00 AM - 8:00 PM",
+    phone: "+27 31 345 6789",
+    hasCoordinates: true
+  },
+  {
+    id: 9,
+    name: "Windhoek Store",
+    address: "Independence Avenue, Windhoek",
+    province: "Windhoek",
+    country: "Namibia",
+    category: "cafe",
+    coordinates: { lat: -22.5609, lng: 17.0658 },
+    mapUrl: "https://www.google.com/maps/@-22.5609,17.0658,15z",
+    hours: "Mon-Fri: 7:00 AM - 6:00 PM, Sat: 8:00 AM - 4:00 PM",
+    phone: "+264 61 123 456",
+    hasCoordinates: true
+  },
+  {
+    id: 10,
+    name: "Food Lover's Market Fourways",
+    address: "Fourways, Sandton, Gauteng",
+    province: "Gauteng",
+    country: "South Africa",
+    category: "food_lovers_market",
+    coordinates: { lat: -26.0123, lng: 28.0198 },
+    mapUrl: "https://www.google.com/maps/@-26.0123,28.0198,15z",
+    hours: "Mon-Sun: 8:00 AM - 8:00 PM",
+    phone: "+27 11 467 8901",
+    hasCoordinates: true
+  }
+];
+
+export default { stores };
