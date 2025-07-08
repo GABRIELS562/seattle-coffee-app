@@ -2,9 +2,10 @@
  * LocationsPage - Main page for displaying and filtering Seattle Coffee stores
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Search, MapPin, Filter } from 'lucide-react';
 import StoreCard from '../components/StoreCard';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { useLocation } from '../hooks/useLocation';
 import {
   addCoordinatesToStores,
@@ -125,7 +126,7 @@ const LocationsPage = () => {
   };
 
   // Handle location request with proper error handling
-  const handleLocationRequest = async () => {
+  const handleLocationRequest = useCallback(async () => {
     try {
       const location = await requestLocation();
       console.log('✅ Location obtained:', location);
@@ -135,12 +136,12 @@ const LocationsPage = () => {
       
     } catch (error) {
       console.error('❌ Location request failed:', error);
-      alert(error.message);
+      setError(`Location access denied: ${error.message}`);
     }
-  };
+  }, [requestLocation]);
 
   // Process stores with distance and filtering
-  const processedStores = React.useMemo(() => {
+  const processedStores = useMemo(() => {
     // Filter stores based on search and region
     const filtered = filterStores(stores, searchQuery, selectedRegion);
     
@@ -154,7 +155,22 @@ const LocationsPage = () => {
   }, [stores, searchQuery, selectedRegion, userLocation]);
 
   // Get unique provinces for filter dropdown
-  const uniqueProvinces = getUniqueProvinces(stores);
+  const uniqueProvinces = useMemo(() => getUniqueProvinces(stores), [stores]);
+
+  // Handle search with debouncing
+  const handleSearch = useCallback((value) => {
+    setSearchQuery(value);
+  }, []);
+
+  // Handle region selection
+  const handleRegionChange = useCallback((region) => {
+    setSelectedRegion(region);
+  }, []);
+
+  // Clear search
+  const clearSearch = useCallback(() => {
+    setSearchQuery('');
+  }, []);
 
   // Debug logging for processed stores
   useEffect(() => {
@@ -179,30 +195,28 @@ const LocationsPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-96">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-blue mx-auto mb-4"></div>
-          <p className="text-brand-blue">Loading stores...</p>
-        </div>
+      <div className="min-h-96 flex items-center justify-center">
+        <LoadingSpinner size="lg" message="Loading stores..." />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <div id="store-locator" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Header */}
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-brand-blue mb-2">Store Locations</h1>
+      <header className="mb-8 sm:mb-12">
+        <h1 className="text-3xl sm:text-4xl font-bold text-brand-blue mb-4 text-center">Store Locations</h1>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <p className="text-gray-600">Find your nearest Seattle Coffee location</p>
           <button
             onClick={handleLocationRequest}
             disabled={locationLoading}
-            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded-lg transition-colors text-sm font-semibold"
+            className="flex items-center space-x-2 bg-brand-blue hover:bg-blue-800 disabled:bg-blue-400 text-white px-4 py-2 rounded-lg transition-colors text-sm font-semibold touch-manipulation"
+            aria-label="Get current location to find nearest stores"
           >
             {locationLoading ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <LoadingSpinner size="sm" message="" />
                 <span>Getting Location...</span>
               </>
             ) : (
@@ -232,40 +246,42 @@ const LocationsPage = () => {
 
         {/* Error Display */}
         {error && (
-          <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg" role="alert">
             <p className="text-red-800 text-sm">⚠️ {error}</p>
           </div>
         )}
-      </div>
+      </header>
 
       {/* Search and Filter Controls */}
-      <div className="mb-6 sm:mb-8 space-y-4 sm:space-y-0 sm:flex sm:space-x-4">
+      <section className="mb-6 sm:mb-8 space-y-4 sm:space-y-0 sm:flex sm:space-x-4" aria-label="Search and filter options">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
           <input
-            type="text"
+            type="search"
             placeholder="Search by store name, address, or province..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-base"
+            aria-label="Search stores"
           />
         </div>
         
         {/* Region Filter */}
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
           <select
             value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
-            className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent appearance-none bg-white min-w-48"
+            onChange={(e) => handleRegionChange(e.target.value)}
+            className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent appearance-none bg-white min-w-48 text-base"
+            aria-label="Filter by region"
           >
             {uniqueProvinces.map(province => (
               <option key={province} value={province}>{province}</option>
             ))}
           </select>
         </div>
-      </div>
+      </section>
 
       {/* Results Summary */}
       <div className="mb-4 flex items-center justify-between">
@@ -284,8 +300,9 @@ const LocationsPage = () => {
         
         {searchQuery && (
           <button
-            onClick={() => setSearchQuery('')}
-            className="text-brand-blue hover:text-blue-800 text-sm"
+            onClick={clearSearch}
+            className="text-brand-blue hover:text-blue-800 text-sm font-medium transition-colors"
+            aria-label="Clear search query"
           >
             Clear search
           </button>
@@ -293,33 +310,36 @@ const LocationsPage = () => {
       </div>
 
       {/* Store Grid */}
-      {processedStores.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {processedStores.map(store => (
-            <StoreCard key={store.id || `${store.name}-${store.address}`} store={store} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">No stores found</h3>
-          <p className="text-gray-500 mb-4">
-            {searchQuery 
-              ? `No stores match "${searchQuery}"` 
-              : `No stores found in ${selectedRegion}`
-            }
-          </p>
-          <button
-            onClick={() => {
-              setSearchQuery('');
-              setSelectedRegion('All');
-            }}
-            className="bg-brand-blue text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors"
-          >
-            View All Stores
-          </button>
-        </div>
-      )}
+      <section aria-label="Store listings">
+        {processedStores.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {processedStores.map(store => (
+              <StoreCard key={store.id || `${store.name}-${store.address}`} store={store} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" aria-hidden="true" />
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">No stores found</h3>
+            <p className="text-gray-500 mb-4">
+              {searchQuery 
+                ? `No stores match "${searchQuery}"` 
+                : `No stores found in ${selectedRegion}`
+              }
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedRegion('All');
+              }}
+              className="bg-brand-blue text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors font-medium"
+              aria-label="Clear filters and view all stores"
+            >
+              View All Stores
+            </button>
+          </div>
+        )}
+      </section>
     </div>
   );
 };

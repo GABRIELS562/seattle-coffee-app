@@ -2,7 +2,7 @@
  * StoreCard - Optimized component for displaying individual store information
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Coffee, MapPin, Clock, Phone, X, Navigation } from 'lucide-react';
 import { getCategoryIcon, MAP_URLS } from '../utils';
 
@@ -10,11 +10,11 @@ const StoreCard = ({ store }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showMapOptions, setShowMapOptions] = useState(false);
 
-  const handleViewOnMap = () => {
+  const handleViewOnMap = useCallback(() => {
     setShowMapOptions(true);
-  };
+  }, []);
 
-  const openInMap = (mapType) => {
+  const openInMap = useCallback((mapType) => {
     const urls = MAP_URLS[mapType];
     let url;
 
@@ -38,36 +38,34 @@ const StoreCard = ({ store }) => {
       url = urls.withSearch(searchQuery);
     }
 
-    window.open(url, '_blank');
+    window.open(url, '_blank', 'noopener,noreferrer');
     setShowMapOptions(false);
-  };
+  }, [store.coordinates, store.name, store.address]);
 
-  const handleGetDirections = () => {
+  const handleGetDirections = useCallback(() => {
     if (store.coordinates) {
       const { lat, lng } = store.coordinates;
       const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-      window.open(url, '_blank');
+      window.open(url, '_blank', 'noopener,noreferrer');
     } else {
       const searchQuery = encodeURIComponent(`${store.name} ${store.address}`);
       const url = `https://www.google.com/maps/dir/?api=1&destination=${searchQuery}`;
-      window.open(url, '_blank');
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
-  };
+  }, [store.coordinates, store.name, store.address]);
 
-  const handleCallStore = () => {
+  const handleCallStore = useCallback(() => {
     if (store.phone) {
       window.location.href = `tel:${store.phone}`;
-    } else {
-      alert('Phone number not available for this store');
     }
-  };
+  }, [store.phone]);
 
   const categoryIcon = getCategoryIcon(store.category);
 
   return (
     <>
       {/* Main Store Card */}
-      <div className="bg-brand-blue text-white p-4 sm:p-6 rounded-lg shadow-store hover:shadow-lg transition-all duration-200 hover:scale-105">
+      <article className="bg-brand-blue text-white p-4 sm:p-6 rounded-lg shadow-store hover:shadow-lg transition-all duration-200 hover:scale-105 focus-within:ring-2 focus-within:ring-bronze focus-within:ring-offset-2">
         <div className="w-12 h-12 bg-bronze rounded-full mb-4 flex items-center justify-center">
           <span className="text-2xl" role="img" aria-label="Store category">
             {categoryIcon}
@@ -107,33 +105,33 @@ const StoreCard = ({ store }) => {
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <button 
             onClick={() => setShowDetails(true)}
-            className="flex-1 bg-bronze text-white py-2 px-3 rounded text-sm font-medium hover:bg-orange-600 transition-colors"
+            className="flex-1 bg-bronze text-white py-2 px-3 rounded text-sm font-medium hover:bg-orange-600 transition-colors touch-manipulation"
             aria-label={`View details for ${store.name}`}
           >
             INFO
           </button>
           <button 
             onClick={handleViewOnMap}
-            className="flex-1 border border-bronze text-bronze py-2 px-3 rounded text-sm font-medium hover:bg-bronze hover:text-white transition-colors"
+            className="flex-1 border border-bronze text-bronze py-2 px-3 rounded text-sm font-medium hover:bg-bronze hover:text-white transition-colors touch-manipulation"
             aria-label={`View ${store.name} on map`}
           >
             VIEW MAP
           </button>
         </div>
-      </div>
+      </article>
 
       {/* Store Details Modal */}
       {showDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setShowDetails(false)}>
+          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="store-details-title">
             {/* Header */}
             <div className="flex justify-between items-center p-4 sm:p-6 border-b">
-              <h3 className="text-lg sm:text-xl font-bold text-brand-blue pr-4">
+              <h3 id="store-details-title" className="text-lg sm:text-xl font-bold text-brand-blue pr-4">
                 {store.name}
               </h3>
               <button 
                 onClick={() => setShowDetails(false)}
-                className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0"
+                className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation"
                 aria-label="Close details"
               >
                 <X className="w-4 h-4" />
@@ -220,7 +218,8 @@ const StoreCard = ({ store }) => {
             <div className="p-4 sm:p-6 border-t space-y-3">
               <button 
                 onClick={handleGetDirections}
-                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center"
+                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation"
+                aria-label="Get directions to this store"
               >
                 <Navigation className="w-5 h-5 mr-2" />
                 Get Directions
@@ -229,7 +228,8 @@ const StoreCard = ({ store }) => {
               <div className="grid grid-cols-2 gap-3">
                 <button 
                   onClick={handleViewOnMap}
-                  className="bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center"
+                  className="bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center touch-manipulation"
+                  aria-label="View store on map"
                 >
                   <MapPin className="w-4 h-4 mr-1" />
                   View Map
@@ -237,8 +237,9 @@ const StoreCard = ({ store }) => {
                 
                 <button 
                   onClick={handleCallStore}
-                  className="bg-green-100 text-green-700 py-2 rounded-lg font-medium hover:bg-green-200 transition-colors flex items-center justify-center"
+                  className="bg-green-100 text-green-700 py-2 rounded-lg font-medium hover:bg-green-200 transition-colors flex items-center justify-center touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!store.phone}
+                  aria-label={store.phone ? `Call store at ${store.phone}` : 'Phone number not available'}
                 >
                   <Phone className="w-4 h-4 mr-1" />
                   Call Store
@@ -251,14 +252,14 @@ const StoreCard = ({ store }) => {
 
       {/* Map Options Modal */}
       {showMapOptions && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-sm w-full">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setShowMapOptions(false)}>
+          <div className="bg-egg-shell rounded-lg max-w-sm w-full shadow-store" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="map-options-title">
             {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b">
-              <h3 className="text-lg font-bold text-brand-blue">Choose Map App</h3>
+            <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
+              <h3 id="map-options-title" className="text-lg sm:text-xl font-bold text-brand-blue">Choose Map App</h3>
               <button 
                 onClick={() => setShowMapOptions(false)}
-                className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation"
                 aria-label="Close map options"
               >
                 <X className="w-4 h-4" />
@@ -266,24 +267,27 @@ const StoreCard = ({ store }) => {
             </div>
             
             {/* Map Options */}
-            <div className="p-4 space-y-3">
+            <div className="p-4 sm:p-6 space-y-3">
               <button 
                 onClick={() => openInMap('GOOGLE')}
-                className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center"
+                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation"
+                aria-label="Open in Google Maps"
               >
                 🗺️ Google Maps
               </button>
               
               <button 
                 onClick={() => openInMap('WAZE')}
-                className="w-full bg-cyan-500 text-white py-3 rounded-lg font-semibold hover:bg-cyan-600 transition-colors flex items-center justify-center"
+                className="w-full bg-bronze text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center touch-manipulation"
+                aria-label="Open in Waze"
               >
                 🚗 Waze
               </button>
               
               <button 
                 onClick={() => openInMap('APPLE')}
-                className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors flex items-center justify-center"
+                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation"
+                aria-label="Open in Apple Maps"
               >
                 🍎 Apple Maps
               </button>

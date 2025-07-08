@@ -1,3 +1,18 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+# Optimize for search engines
+Sitemap: /sitemap.xml
+
+# Disallow admin paths (if any)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dev-scripts/
+
+# Allow specific files
+Allow: /manifest.json
+Allow: /favicon.ico
+Allow: /logo192.png
+Allow: /logo512.png
+Allow: /seattleCoffeeComplete.json

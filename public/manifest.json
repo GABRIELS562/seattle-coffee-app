@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Seattle Coffee",
+  "name": "Seattle Coffee Store Locator",
+  "description": "Find your nearest Seattle Coffee location across South Africa",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,11 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait",
+  "theme_color": "#001e60",
+  "background_color": "#f6f5f3",
+  "categories": ["food", "business", "shopping"],
+  "lang": "en-ZA",
+  "scope": "/",
+  "prefer_related_applications": false
 }

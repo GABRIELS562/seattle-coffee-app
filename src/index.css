@@ -20,6 +20,9 @@ body {
   color: var(--color-blue);
   background-color: var(--color-egg-shell);
   line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 @layer components {
@@ -69,5 +72,72 @@ body {
   /* Smooth transitions */
   .transition-all {
     transition: all 0.2s ease-in-out;
+  }
+
+  /* Touch improvements */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+
+  /* Focus styles */
+  .focus-outline {
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2;
+  }
+
+  /* Safe area for iOS */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Prevent text selection on buttons */
+  button {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  /* Improve scroll performance */
+  .scroll-optimized {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Ken Burns zoom effect for hero slideshow */
+  .ken-burns-zoom {
+    transform: scale(1);
+    transition: transform 3000ms ease-out;
+  }
+
+  .ken-burns-active {
+    transform: scale(1.1);
+  }
+
+  /* Text shadows for better readability on images */
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Hero section specific styles */
+  .hero-section {
+    height: 100vh;
+    min-height: 600px;
+  }
+
+  @media (max-height: 600px) {
+    .hero-section {
+      height: 600px;
+    }
   }
 }
