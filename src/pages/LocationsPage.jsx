@@ -38,6 +38,7 @@ const LocationsPage = () => {
       try {
         // STEP 1: Load fallback stores immediately for fast initial render
         const { stores: fallbackStores } = await import('../data/fallbackStores');
+        console.log('📦 Fallback stores loaded:', fallbackStores?.length);
         const fallbackWithCoords = addCoordinatesToStores(fallbackStores);
         setStores(fallbackWithCoords);
         setLoading(false);
@@ -55,6 +56,7 @@ const LocationsPage = () => {
 
         // STEP 3: Fetch complete database
         console.log('📡 Fetching complete database...');
+        console.log('API_ENDPOINTS.COMPLETE_STORES:', API_ENDPOINTS.COMPLETE_STORES);
         const response = await fetch(API_ENDPOINTS.COMPLETE_STORES);
         
         if (!response.ok) {
@@ -62,6 +64,7 @@ const LocationsPage = () => {
         }
         
         const data = await response.json();
+        console.log('📊 Data received:', { hasStores: !!data.stores, isArray: Array.isArray(data.stores), storeCount: data.stores?.length });
         
         if (!data.stores || !Array.isArray(data.stores)) {
           throw new Error('Invalid data format received');

@@ -10,7 +10,7 @@ export const useLocation = () => {
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState(null);
 
-  const requestLocation = useCallback((useTestLocation = true) => {
+  const requestLocation = useCallback((useTestLocation = false) => {
     setLocationLoading(true);
     setLocationError(null);
     
