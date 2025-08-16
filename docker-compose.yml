@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Option 1: Without authentication (private network access)
+  seattle-coffee:
+    build: .
+    container_name: seattle-coffee-app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - coffee-network
+
+  # Option 2: With authentication and HTTPS (using Caddy for automatic SSL)
+  seattle-coffee-secure:
+    build: .
+    container_name: seattle-coffee-secure
+    volumes:
+      - ./nginx-auth.conf:/etc/nginx/conf.d/default.conf
+      - ./.htpasswd:/etc/nginx/.htpasswd
+    restart: unless-stopped
+    networks:
+      - coffee-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.coffee.rule=Host(`coffee.yourdomain.com`)"
+      - "traefik.http.routers.coffee.tls=true"
+      - "traefik.http.routers.coffee.tls.certresolver=letsencrypt"
+
+  # Option 3: Using Caddy for automatic HTTPS and authentication
+  caddy:
+    image: caddy:alpine
+    container_name: caddy-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    networks:
+      - coffee-network
+
+networks:
+  coffee-network:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

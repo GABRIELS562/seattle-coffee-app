@@ -105,14 +105,14 @@ const StoreCard = ({ store }) => {
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <button 
             onClick={() => setShowDetails(true)}
-            className="flex-1 bg-bronze text-white py-2 px-3 rounded text-sm font-medium hover:bg-orange-600 transition-colors touch-manipulation"
+            className="flex-1 bg-bronze text-white py-3 px-4 rounded text-sm font-medium hover:bg-orange-600 transition-colors touch-manipulation min-h-[44px]"
             aria-label={`View details for ${store.name}`}
           >
             INFO
           </button>
           <button 
             onClick={handleViewOnMap}
-            className="flex-1 border border-bronze text-bronze py-2 px-3 rounded text-sm font-medium hover:bg-bronze hover:text-white transition-colors touch-manipulation"
+            className="flex-1 border border-bronze text-bronze py-3 px-4 rounded text-sm font-medium hover:bg-bronze hover:text-white transition-colors touch-manipulation min-h-[44px]"
             aria-label={`View ${store.name} on map`}
           >
             VIEW MAP
@@ -131,10 +131,10 @@ const StoreCard = ({ store }) => {
               </h3>
               <button 
                 onClick={() => setShowDetails(false)}
-                className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation"
+                className="bg-gray-200 hover:bg-gray-300 w-11 h-11 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation min-w-[44px] min-h-[44px]"
                 aria-label="Close details"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
             
@@ -218,7 +218,7 @@ const StoreCard = ({ store }) => {
             <div className="p-4 sm:p-6 border-t space-y-3">
               <button 
                 onClick={handleGetDirections}
-                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation"
+                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
                 aria-label="Get directions to this store"
               >
                 <Navigation className="w-5 h-5 mr-2" />
@@ -228,7 +228,7 @@ const StoreCard = ({ store }) => {
               <div className="grid grid-cols-2 gap-3">
                 <button 
                   onClick={handleViewOnMap}
-                  className="bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center touch-manipulation"
+                  className="bg-gray-100 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center touch-manipulation min-h-[44px]"
                   aria-label="View store on map"
                 >
                   <MapPin className="w-4 h-4 mr-1" />
@@ -237,7 +237,7 @@ const StoreCard = ({ store }) => {
                 
                 <button 
                   onClick={handleCallStore}
-                  className="bg-green-100 text-green-700 py-2 rounded-lg font-medium hover:bg-green-200 transition-colors flex items-center justify-center touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-green-100 text-green-700 py-3 rounded-lg font-medium hover:bg-green-200 transition-colors flex items-center justify-center touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
                   disabled={!store.phone}
                   aria-label={store.phone ? `Call store at ${store.phone}` : 'Phone number not available'}
                 >
@@ -259,10 +259,10 @@ const StoreCard = ({ store }) => {
               <h3 id="map-options-title" className="text-lg sm:text-xl font-bold text-brand-blue">Choose Map App</h3>
               <button 
                 onClick={() => setShowMapOptions(false)}
-                className="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation"
+                className="bg-gray-200 hover:bg-gray-300 w-11 h-11 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation min-w-[44px] min-h-[44px]"
                 aria-label="Close map options"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
             
@@ -270,7 +270,7 @@ const StoreCard = ({ store }) => {
             <div className="p-4 sm:p-6 space-y-3">
               <button 
                 onClick={() => openInMap('GOOGLE')}
-                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation"
+                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
                 aria-label="Open in Google Maps"
               >
                 🗺️ Google Maps
@@ -278,7 +278,7 @@ const StoreCard = ({ store }) => {
               
               <button 
                 onClick={() => openInMap('WAZE')}
-                className="w-full bg-bronze text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center touch-manipulation"
+                className="w-full bg-bronze text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
                 aria-label="Open in Waze"
               >
                 🚗 Waze
@@ -286,7 +286,7 @@ const StoreCard = ({ store }) => {
               
               <button 
                 onClick={() => openInMap('APPLE')}
-                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation"
+                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
                 aria-label="Open in Apple Maps"
               >
                 🍎 Apple Maps

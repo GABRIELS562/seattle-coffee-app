@@ -1,0 +1,28 @@
+# Caddy configuration for automatic HTTPS and authentication
+# Replace 'your-domain.com' with your actual domain or use your server's IP
+
+# Option 1: Domain with HTTPS and basic auth
+coffee.your-domain.com {
+    basicauth {
+        # Username: admin, Password: changeme
+        # Generate hash: caddy hash-password --plaintext 'changeme'
+        admin $2a$14$Zkx19XLiW6VYouLHR5NmfOFU0z2GTNmpkT/5qqR7hx4IjWJPDhjvG
+    }
+    
+    reverse_proxy seattle-coffee:80
+}
+
+# Option 2: IP address with self-signed cert and basic auth
+# Uncomment and modify for IP-based access
+# :443 {
+#     tls internal
+#     basicauth {
+#         admin $2a$14$Zkx19XLiW6VYouLHR5NmfOFU0z2GTNmpkT/5qqR7hx4IjWJPDhjvG
+#     }
+#     reverse_proxy seattle-coffee:80
+# }
+
+# Option 3: Local network only (no auth)
+# :8080 {
+#     reverse_proxy seattle-coffee:80
+# }

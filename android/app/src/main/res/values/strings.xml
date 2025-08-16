@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Seattle Coffee</string>
+    <string name="title_activity_main">Seattle Coffee</string>
+    <string name="package_name">com.seattlecoffee.app</string>
+    <string name="custom_url_scheme">com.seattlecoffee.app</string>
+</resources>

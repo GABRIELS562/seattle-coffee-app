@@ -33,7 +33,6 @@ export {
 
 // Constants
 export {
-  BERGVLIET_COORDINATES,
   API_ENDPOINTS,
   SEARCH_FIELDS,
   STORE_CATEGORIES,

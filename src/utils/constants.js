@@ -2,12 +2,6 @@
  * Application constants
  */
 
-// Test coordinates for Bergvliet, Western Cape
-export const BERGVLIET_COORDINATES = {
-  lat: -34.0447,
-  lng: 18.4300
-};
-
 // API endpoints
 export const API_ENDPOINTS = {
   COMPLETE_STORES: '/seattleCoffeeComplete.json'

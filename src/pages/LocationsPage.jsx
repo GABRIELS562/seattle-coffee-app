@@ -2,11 +2,13 @@
  * LocationsPage - Main page for displaying and filtering Seattle Coffee stores
  */
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Search, MapPin, Filter } from 'lucide-react';
-import StoreCard from '../components/StoreCard';
+import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
+import { Search, MapPin, Filter, RefreshCw } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { useLocation } from '../hooks/useLocation';
+import { useNativeLocation as useLocation } from '../hooks/useNativeLocation';
+
+const VirtualizedStoreList = lazy(() => import('../components/VirtualizedStoreList'));
+const StoreCard = lazy(() => import('../components/StoreCard'));
 import {
   addCoordinatesToStores,
   addDistanceToStores,
@@ -16,6 +18,7 @@ import {
   getSampleStores,
   getCachedStores,
   setCachedStores,
+  clearCachedStores,
   API_ENDPOINTS
 } from '../utils';
 
@@ -26,37 +29,33 @@ const LocationsPage = () => {
   const [loading, setLoading] = useState(true);
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [error, setError] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showPaginated, setShowPaginated] = useState(true);
 
   const { userLocation, locationLoading, requestLocation, clearLocation, hasLocation } = useLocation();
 
   // Load stores with progressive enhancement strategy
   useEffect(() => {
     const loadStores = async () => {
-      console.log('🔄 Starting store loading process...');
       setError(null);
       
       try {
         // STEP 1: Load fallback stores immediately for fast initial render
         const { stores: fallbackStores } = await import('../data/fallbackStores');
-        console.log('📦 Fallback stores loaded:', fallbackStores?.length);
         const fallbackWithCoords = addCoordinatesToStores(fallbackStores);
         setStores(fallbackWithCoords);
         setLoading(false);
-        console.log(`⚡ Quick loaded ${fallbackStores.length} fallback stores`);
 
         // STEP 2: Try cache first
         const cachedStores = getCachedStores();
         if (cachedStores) {
           const cachedWithCoords = addCoordinatesToStores(cachedStores);
-          console.log(`⚡ Loaded ${cachedStores.length} stores from cache`);
           setStores(cachedWithCoords);
           setLoadingComplete(true);
           return;
         }
 
         // STEP 3: Fetch complete database
-        console.log('📡 Fetching complete database...');
-        console.log('API_ENDPOINTS.COMPLETE_STORES:', API_ENDPOINTS.COMPLETE_STORES);
         const response = await fetch(API_ENDPOINTS.COMPLETE_STORES);
         
         if (!response.ok) {
@@ -64,19 +63,13 @@ const LocationsPage = () => {
         }
         
         const data = await response.json();
-        console.log('📊 Data received:', { hasStores: !!data.stores, isArray: Array.isArray(data.stores), storeCount: data.stores?.length });
         
         if (!data.stores || !Array.isArray(data.stores)) {
           throw new Error('Invalid data format received');
         }
 
-        console.log(`✅ Loaded ${data.stores.length} stores from database`);
-        
         // Add coordinates to all stores
         const storesWithCoordinates = addCoordinatesToStores(data.stores);
-        
-        // Debug logging for local stores
-        logLocalStoreData(storesWithCoordinates);
         
         setStores(storesWithCoordinates);
         setLoadingComplete(true);
@@ -85,7 +78,6 @@ const LocationsPage = () => {
         setCachedStores(data.stores);
         
       } catch (fetchError) {
-        console.error('❌ Failed to load stores:', fetchError);
         setError(fetchError.message);
         
         // Ensure we have some stores to show
@@ -100,45 +92,14 @@ const LocationsPage = () => {
     loadStores();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Helper function to log debug data for local stores
-  const logLocalStoreData = (allStores) => {
-    const localStores = allStores.filter(store => 
-      store.name.toLowerCase().includes('tokai') ||
-      store.name.toLowerCase().includes('constantia') ||
-      store.name.toLowerCase().includes('kenilworth') ||
-      store.address.toLowerCase().includes('tokai') ||
-      store.address.toLowerCase().includes('constantia') ||
-      store.address.toLowerCase().includes('kenilworth')
-    );
-    
-    console.log('🏠 Local stores found:', localStores.map(s => ({
-      name: s.name,
-      address: s.address,
-      coordinates: s.coordinates
-    })));
-
-    // Check for Tokai specifically
-    const tokaiStore = allStores.find(store => 
-      store.name.toLowerCase().includes('tokai')
-    );
-    if (tokaiStore) {
-      console.log('🏪 Tokai store found:', tokaiStore.name, '-', tokaiStore.address);
-    } else {
-      console.warn('⚠️ No Tokai store found in database');
-    }
-  };
 
   // Handle location request with proper error handling
   const handleLocationRequest = useCallback(async () => {
     try {
       const location = await requestLocation();
-      console.log('✅ Location obtained:', location);
-      
       // Auto-select 'All' to show distance-sorted stores
       setSelectedRegion('All');
-      
     } catch (error) {
-      console.error('❌ Location request failed:', error);
       setError(`Location access denied: ${error.message}`);
     }
   }, [requestLocation]);
@@ -175,26 +136,26 @@ const LocationsPage = () => {
     setSearchQuery('');
   }, []);
 
-  // Debug logging for processed stores
-  useEffect(() => {
-    if (hasLocation && processedStores.length > 0) {
-      const storesWithDistance = processedStores.filter(store => store.distance !== undefined);
-      
-      console.log(`🎯 Processed stores summary:`);
-      console.log(`- User location: ${userLocation.lat}, ${userLocation.lng}`);
-      console.log(`- Region filter: "${selectedRegion}"`);
-      console.log(`- Search query: "${searchQuery}"`);
-      console.log(`- Total filtered: ${processedStores.length}`);
-      console.log(`- With distance: ${storesWithDistance.length}`);
-      
-      const top5 = storesWithDistance.slice(0, 5).map(s => ({
-        name: s.name,
-        distance: `${s.distance.toFixed(2)} km`,
-        province: s.province
-      }));
-      console.log(`🏆 Top 5 nearest:`, top5);
+  // Handle pull to refresh
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      clearCachedStores();
+      const response = await fetch(API_ENDPOINTS.COMPLETE_STORES);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.stores && Array.isArray(data.stores)) {
+          const storesWithCoordinates = addCoordinatesToStores(data.stores);
+          setStores(storesWithCoordinates);
+          setCachedStores(data.stores);
+        }
+      }
+    } catch (error) {
+      setError('Failed to refresh stores');
+    } finally {
+      setIsRefreshing(false);
     }
-  }, [processedStores, hasLocation, userLocation, selectedRegion, searchQuery]);
+  }, []);
 
   if (loading) {
     return (
@@ -214,7 +175,7 @@ const LocationsPage = () => {
           <button
             onClick={handleLocationRequest}
             disabled={locationLoading}
-            className="flex items-center space-x-2 bg-brand-blue hover:bg-blue-800 disabled:bg-blue-400 text-white px-4 py-2 rounded-lg transition-colors text-sm font-semibold touch-manipulation"
+            className="flex items-center space-x-2 bg-brand-blue hover:bg-blue-800 disabled:bg-blue-400 text-white px-6 py-3 rounded-lg transition-colors text-sm font-semibold touch-manipulation min-h-[44px]"
             aria-label="Get current location to find nearest stores"
           >
             {locationLoading ? (
@@ -312,14 +273,35 @@ const LocationsPage = () => {
         )}
       </div>
 
+      {/* Refresh Button */}
+      {loadingComplete && (
+        <div className="mb-4 flex justify-end">
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="flex items-center space-x-2 text-brand-blue hover:text-blue-800 disabled:text-gray-400 transition-colors"
+            aria-label="Refresh store list"
+          >
+            <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="text-sm font-medium">Refresh</span>
+          </button>
+        </div>
+      )}
+
       {/* Store Grid */}
       <section aria-label="Store listings">
         {processedStores.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {processedStores.map(store => (
-              <StoreCard key={store.id || `${store.name}-${store.address}`} store={store} />
-            ))}
-          </div>
+          <Suspense fallback={<LoadingSpinner size="lg" message="Loading stores..." />}>
+            {processedStores.length > 20 && showPaginated ? (
+              <VirtualizedStoreList stores={processedStores} />
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {processedStores.map(store => (
+                  <StoreCard key={store.id || `${store.name}-${store.address}`} store={store} />
+                ))}
+              </div>
+            )}
+          </Suspense>
         ) : (
           <div className="text-center py-12">
             <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" aria-hidden="true" />
@@ -335,7 +317,7 @@ const LocationsPage = () => {
                 setSearchQuery('');
                 setSelectedRegion('All');
               }}
-              className="bg-brand-blue text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors font-medium"
+              className="bg-brand-blue text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors font-medium min-h-[44px]"
               aria-label="Clear filters and view all stores"
             >
               View All Stores
