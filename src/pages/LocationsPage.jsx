@@ -32,7 +32,7 @@ const LocationsPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPaginated, setShowPaginated] = useState(true);
 
-  const { userLocation, locationLoading, requestLocation, clearLocation, hasLocation } = useLocation();
+  const { userLocation, locationLoading, locationError, requestLocation, clearLocation, hasLocation } = useLocation();
 
   // Load stores with progressive enhancement strategy
   useEffect(() => {
@@ -40,22 +40,39 @@ const LocationsPage = () => {
       setError(null);
       
       try {
-        // STEP 1: Load fallback stores immediately for fast initial render
+        // STEP 1: Try cache with coordinates first for instant load
+        const cachedWithCoords = getCachedStores(true);
+        if (cachedWithCoords && cachedWithCoords.length > 0) {
+          setStores(cachedWithCoords);
+          setLoading(false);
+          setLoadingComplete(true);
+          return;
+        }
+
+        // STEP 2: Try cache without coordinates
+        const cachedStores = getCachedStores(false);
+        if (cachedStores && cachedStores.length > 0) {
+          // Show immediately
+          setStores(cachedStores);
+          setLoading(false);
+          
+          // Add coordinates and cache the result
+          requestAnimationFrame(() => {
+            const storesWithCoords = addCoordinatesToStores(cachedStores);
+            setStores(storesWithCoords);
+            setCachedStores(storesWithCoords, true);
+            setLoadingComplete(true);
+          });
+          return;
+        }
+
+        // STEP 3: Load fallback stores immediately if no cache
         const { stores: fallbackStores } = await import('../data/fallbackStores');
         const fallbackWithCoords = addCoordinatesToStores(fallbackStores);
         setStores(fallbackWithCoords);
         setLoading(false);
 
-        // STEP 2: Try cache first
-        const cachedStores = getCachedStores();
-        if (cachedStores) {
-          const cachedWithCoords = addCoordinatesToStores(cachedStores);
-          setStores(cachedWithCoords);
-          setLoadingComplete(true);
-          return;
-        }
-
-        // STEP 3: Fetch complete database
+        // STEP 4: Fetch complete database in background
         const response = await fetch(API_ENDPOINTS.COMPLETE_STORES);
         
         if (!response.ok) {
@@ -68,17 +85,20 @@ const LocationsPage = () => {
           throw new Error('Invalid data format received');
         }
 
-        // Add coordinates to all stores
-        const storesWithCoordinates = addCoordinatesToStores(data.stores);
+        // Cache raw data immediately
+        setCachedStores(data.stores, false);
         
+        // Add coordinates and show
+        const storesWithCoordinates = addCoordinatesToStores(data.stores);
         setStores(storesWithCoordinates);
+        
+        // Cache with coordinates for next time
+        setCachedStores(storesWithCoordinates, true);
         setLoadingComplete(true);
         
-        // Cache the original data (without coordinates to save space)
-        setCachedStores(data.stores);
-        
       } catch (fetchError) {
-        setError(fetchError.message);
+        console.error('Store loading error:', fetchError);
+        setError('Unable to load all stores. Showing available stores.');
         
         // Ensure we have some stores to show
         if (stores.length === 0) {
@@ -96,11 +116,17 @@ const LocationsPage = () => {
   // Handle location request with proper error handling
   const handleLocationRequest = useCallback(async () => {
     try {
+      console.log('Requesting location...');
       const location = await requestLocation();
+      console.log('Location received:', location);
       // Auto-select 'All' to show distance-sorted stores
       setSelectedRegion('All');
+      // Clear any previous errors
+      setError(null);
     } catch (error) {
-      setError(`Location access denied: ${error.message}`);
+      console.error('Location request failed:', error);
+      // Don't set error state, just log it - the hook already manages error state
+      // Users can still browse stores without location
     }
   }, [requestLocation]);
 
@@ -147,7 +173,8 @@ const LocationsPage = () => {
         if (data.stores && Array.isArray(data.stores)) {
           const storesWithCoordinates = addCoordinatesToStores(data.stores);
           setStores(storesWithCoordinates);
-          setCachedStores(data.stores);
+          setCachedStores(data.stores, false);
+          setCachedStores(storesWithCoordinates, true);
         }
       }
     } catch (error) {
@@ -204,6 +231,15 @@ const LocationsPage = () => {
               >
                 Clear location
               </button>
+            </p>
+          </div>
+        )}
+        
+        {/* Location Error */}
+        {locationError && !hasLocation && (
+          <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800 text-sm">
+              📍 {locationError}
             </p>
           </div>
         )}

@@ -155,10 +155,21 @@ export const addCoordinatesToStore = (store) => {
 };
 
 /**
- * Add coordinates to an array of stores
+ * Add coordinates to an array of stores with batch processing
  * @param {Array} stores - Array of store objects
  * @returns {Array} Stores with coordinates added
  */
 export const addCoordinatesToStores = (stores) => {
-  return stores.map(addCoordinatesToStore);
+  if (!stores || stores.length === 0) return [];
+  
+  // Process in chunks to avoid blocking the UI
+  const CHUNK_SIZE = 100;
+  const result = [];
+  
+  for (let i = 0; i < stores.length; i += CHUNK_SIZE) {
+    const chunk = stores.slice(i, i + CHUNK_SIZE);
+    result.push(...chunk.map(addCoordinatesToStore));
+  }
+  
+  return result;
 };
