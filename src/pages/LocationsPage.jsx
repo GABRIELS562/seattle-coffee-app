@@ -379,7 +379,7 @@ const LocationsPage = () => {
           </div>
           
           {/* Show top 5 nearest stores in a special layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {processedStores.slice(0, 5).map((store, index) => (
               <div key={store.id || `${store.name}-${store.address}`} className="relative">
                 {index === 0 && (
@@ -410,7 +410,7 @@ const LocationsPage = () => {
           <Suspense fallback={<LoadingSpinner size="lg" message="Loading stores..." />}>
             {/* When location is detected, show remaining stores */}
             {hasLocation && processedStores.length > 5 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 {processedStores.slice(5).map(store => (
                   <div key={store.id || `${store.name}-${store.address}`} className="w-full">
                     <StoreCard store={store} />
@@ -422,7 +422,7 @@ const LocationsPage = () => {
               processedStores.length > 20 && showPaginated ? (
                 <VirtualizedStoreList stores={processedStores} />
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                   {processedStores.map(store => (
                     <div key={store.id || `${store.name}-${store.address}`} className="w-full">
                       <StoreCard store={store} />

@@ -51,8 +51,8 @@ const VirtualizedStoreList = ({ stores, maxHeight }) => {
   const Row = useCallback(({ index, style }) => {
     const startIndex = index * columnCount;
     const items = [];
-    const gapClass = columnCount === 1 ? 'gap-4' : columnCount === 2 ? 'gap-4' : 'gap-6';
-    const paddingClass = columnCount === 1 ? 'px-4' : columnCount === 2 ? 'px-3' : 'px-4';
+    const gapClass = columnCount === 1 ? 'gap-6' : columnCount === 2 ? 'gap-6' : 'gap-6';
+    const paddingClass = columnCount === 1 ? 'px-4' : columnCount === 2 ? 'px-4' : 'px-4';
     
     for (let i = 0; i < columnCount; i++) {
       const storeIndex = startIndex + i;

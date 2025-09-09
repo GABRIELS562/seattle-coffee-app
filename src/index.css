@@ -460,3 +460,39 @@ html, body {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f3f4f6;
 }
+
+/* Force proper grid spacing */
+.grid > * {
+  margin: 0 !important;
+}
+
+/* Ensure gap is applied on all grid layouts */
+.grid {
+  gap: 1.5rem !important; /* 24px spacing */
+}
+
+/* Mobile specific grid spacing */
+@media (max-width: 640px) {
+  .grid {
+    gap: 1.25rem !important; /* 20px spacing on mobile */
+  }
+  
+  /* Ensure single column on mobile */
+  .grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Tablet and above grid columns */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Desktop grid columns */
+@media (min-width: 1024px) {
+  .grid:not(.grid-cols-1) {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
