@@ -325,24 +325,24 @@ const LocationsPage = () => {
       <section className="mb-6 sm:mb-8 space-y-4 sm:space-y-0 sm:flex sm:space-x-4" aria-label="Search and filter options">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none z-10" aria-hidden="true" />
           <input
             type="search"
             placeholder="Search by store name, address, or province..."
             value={searchInput}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors text-base bg-white shadow-sm"
+            className="w-full pl-11 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors text-base bg-white shadow-sm"
             aria-label="Search stores"
           />
         </div>
         
         {/* Region Filter */}
         <div className="relative sm:min-w-[200px]">
-          <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
+          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none z-10" aria-hidden="true" />
           <select
             value={selectedRegion}
             onChange={(e) => handleRegionChange(e.target.value)}
-            className="w-full pl-12 pr-10 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors appearance-none bg-white text-base shadow-sm cursor-pointer"
+            className="w-full pl-11 pr-10 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors appearance-none bg-white text-base shadow-sm cursor-pointer"
             aria-label="Filter by region"
           >
             {uniqueProvinces.map(province => (
@@ -350,7 +350,7 @@ const LocationsPage = () => {
             ))}
           </select>
           {/* Custom dropdown arrow */}
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none z-10">
             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
