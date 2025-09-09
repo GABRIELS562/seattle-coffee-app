@@ -2,7 +2,7 @@
  * LocationsPage - Main page for displaying and filtering Seattle Coffee stores
  */
 
-import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense, useRef } from 'react';
 import { Search, MapPin, Filter, RefreshCw } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useNativeLocation as useLocation } from '../hooks/useNativeLocation';
@@ -24,6 +24,7 @@ import {
 
 const LocationsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState(''); // For immediate input display
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -147,9 +148,31 @@ const LocationsPage = () => {
   // Get unique provinces for filter dropdown
   const uniqueProvinces = useMemo(() => getUniqueProvinces(stores), [stores]);
 
-  // Handle search with debouncing
+  // Handle search with debouncing for better performance
+  const searchTimeoutRef = useRef(null);
+  
   const handleSearch = useCallback((value) => {
-    setSearchQuery(value);
+    // Update input immediately for responsiveness
+    setSearchInput(value);
+    
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Set new timeout for debouncing actual search
+    searchTimeoutRef.current = setTimeout(() => {
+      setSearchQuery(value);
+    }, 300);
+  }, []);
+  
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Handle region selection
@@ -160,6 +183,10 @@ const LocationsPage = () => {
   // Clear search
   const clearSearch = useCallback(() => {
     setSearchQuery('');
+    setSearchInput('');
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
   }, []);
 
   // Handle pull to refresh
@@ -193,16 +220,16 @@ const LocationsPage = () => {
   }
 
   return (
-    <div id="store-locator" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div id="store-locator" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
       {/* Header */}
-      <header className="mb-8 sm:mb-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-brand-blue mb-4 text-center">Store Locations</h1>
+      <header className="mb-6 sm:mb-8 lg:mb-12">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-blue mb-4 text-center leading-tight">Store Locations</h1>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-gray-600">Find your nearest Seattle Coffee location</p>
+          <p className="text-gray-600 text-base sm:text-lg">Find your nearest Seattle Coffee location</p>
           <button
             onClick={handleLocationRequest}
             disabled={locationLoading}
-            className="flex items-center space-x-2 bg-brand-blue hover:bg-blue-800 disabled:bg-blue-400 text-white px-6 py-3 rounded-lg transition-colors text-sm font-semibold touch-manipulation min-h-[44px]"
+            className="flex items-center justify-center space-x-2 bg-brand-blue hover:bg-blue-800 active:bg-blue-900 disabled:bg-blue-400 text-white px-6 py-3 rounded-lg transition-colors text-sm font-semibold touch-manipulation min-h-[48px] focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 shadow-sm"
             aria-label="Get current location to find nearest stores"
           >
             {locationLoading ? (
@@ -256,30 +283,36 @@ const LocationsPage = () => {
       <section className="mb-6 sm:mb-8 space-y-4 sm:space-y-0 sm:flex sm:space-x-4" aria-label="Search and filter options">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
           <input
             type="search"
             placeholder="Search by store name, address, or province..."
-            value={searchQuery}
+            value={searchInput}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-base"
+            className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors text-base bg-white shadow-sm"
             aria-label="Search stores"
           />
         </div>
         
         {/* Region Filter */}
-        <div className="relative">
-          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
+        <div className="relative sm:min-w-[200px]">
+          <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" aria-hidden="true" />
           <select
             value={selectedRegion}
             onChange={(e) => handleRegionChange(e.target.value)}
-            className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent appearance-none bg-white min-w-48 text-base"
+            className="w-full pl-12 pr-10 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors appearance-none bg-white text-base shadow-sm cursor-pointer"
             aria-label="Filter by region"
           >
             {uniqueProvinces.map(province => (
               <option key={province} value={province}>{province}</option>
             ))}
           </select>
+          {/* Custom dropdown arrow */}
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
         </div>
       </section>
 
@@ -298,7 +331,7 @@ const LocationsPage = () => {
           )}
         </p>
         
-        {searchQuery && (
+        {(searchQuery || searchInput) && (
           <button
             onClick={clearSearch}
             className="text-brand-blue hover:text-blue-800 text-sm font-medium transition-colors"
@@ -331,9 +364,11 @@ const LocationsPage = () => {
             {processedStores.length > 20 && showPaginated ? (
               <VirtualizedStoreList stores={processedStores} />
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
                 {processedStores.map(store => (
-                  <StoreCard key={store.id || `${store.name}-${store.address}`} store={store} />
+                  <div key={store.id || `${store.name}-${store.address}`} className="w-full flex">
+                    <StoreCard store={store} />
+                  </div>
                 ))}
               </div>
             )}
@@ -351,9 +386,13 @@ const LocationsPage = () => {
             <button
               onClick={() => {
                 setSearchQuery('');
+                setSearchInput('');
                 setSelectedRegion('All');
+                if (searchTimeoutRef.current) {
+                  clearTimeout(searchTimeoutRef.current);
+                }
               }}
-              className="bg-brand-blue text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors font-medium min-h-[44px]"
+              className="bg-brand-blue text-white px-6 py-3 rounded-lg hover:bg-blue-800 active:bg-blue-900 transition-colors font-medium min-h-[48px] focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 shadow-sm"
               aria-label="Clear filters and view all stores"
             >
               View All Stores

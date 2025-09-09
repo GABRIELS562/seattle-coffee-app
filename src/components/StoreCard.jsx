@@ -65,18 +65,18 @@ const StoreCard = ({ store }) => {
   return (
     <>
       {/* Main Store Card */}
-      <article className="bg-brand-blue text-white p-4 sm:p-6 rounded-lg shadow-store hover:shadow-lg transition-all duration-200 hover:scale-105 focus-within:ring-2 focus-within:ring-bronze focus-within:ring-offset-2">
+      <article className="bg-brand-blue text-white p-4 sm:p-6 rounded-lg shadow-store hover:shadow-lg transition-all duration-200 hover:scale-[1.02] focus-within:ring-2 focus-within:ring-bronze focus-within:ring-offset-2 w-full h-full flex flex-col min-h-[280px] sm:min-h-[300px]">
         <div className="w-12 h-12 bg-bronze rounded-full mb-4 flex items-center justify-center">
           <span className="text-2xl" role="img" aria-label="Store category">
             {categoryIcon}
           </span>
         </div>
         
-        <h2 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4 line-clamp-2">
+        <h2 className="text-lg sm:text-xl md:text-xl font-bold mb-3 sm:mb-4 line-clamp-2 leading-tight">
           {store.name}
         </h2>
         
-        <div className="mb-2 sm:mb-4 space-y-1">
+        <div className="mb-3 sm:mb-4 space-y-2 flex-grow">
           <p className="text-egg-shell text-sm flex items-start">
             <MapPin className="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" />
             <span className="line-clamp-2">{store.address}</span>
@@ -102,17 +102,17 @@ const StoreCard = ({ store }) => {
           )}
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-auto pt-2">
           <button 
             onClick={() => setShowDetails(true)}
-            className="flex-1 bg-bronze text-white py-3 px-4 rounded text-sm font-medium hover:bg-orange-600 transition-colors touch-manipulation min-h-[44px]"
+            className="flex-1 bg-bronze text-white py-3 px-4 rounded-md text-sm font-semibold hover:bg-orange-600 active:bg-orange-700 transition-colors touch-manipulation min-h-[48px] focus:outline-none focus:ring-2 focus:ring-bronze focus:ring-offset-2 focus:ring-offset-brand-blue"
             aria-label={`View details for ${store.name}`}
           >
-            INFO
+            DETAILS
           </button>
           <button 
             onClick={handleViewOnMap}
-            className="flex-1 border border-bronze text-bronze py-3 px-4 rounded text-sm font-medium hover:bg-bronze hover:text-white transition-colors touch-manipulation min-h-[44px]"
+            className="flex-1 border-2 border-bronze text-bronze py-3 px-4 rounded-md text-sm font-semibold hover:bg-bronze hover:text-white active:bg-orange-600 active:border-orange-600 transition-colors touch-manipulation min-h-[48px] focus:outline-none focus:ring-2 focus:ring-bronze focus:ring-offset-2 focus:ring-offset-brand-blue"
             aria-label={`View ${store.name} on map`}
           >
             VIEW MAP
@@ -122,19 +122,19 @@ const StoreCard = ({ store }) => {
 
       {/* Store Details Modal */}
       {showDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setShowDetails(false)}>
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="store-details-title">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm" onClick={() => setShowDetails(false)}>
+          <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="store-details-title">
             {/* Header */}
-            <div className="flex justify-between items-center p-4 sm:p-6 border-b">
-              <h3 id="store-details-title" className="text-lg sm:text-xl font-bold text-brand-blue pr-4">
+            <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
+              <h3 id="store-details-title" className="text-xl sm:text-2xl font-bold text-brand-blue pr-4 line-clamp-2">
                 {store.name}
               </h3>
               <button 
                 onClick={() => setShowDetails(false)}
-                className="bg-gray-200 hover:bg-gray-300 w-11 h-11 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation min-w-[44px] min-h-[44px]"
-                aria-label="Close details"
+                className="bg-gray-100 hover:bg-gray-200 active:bg-gray-300 w-12 h-12 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation min-w-[48px] min-h-[48px] focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                aria-label="Close store details"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6 text-gray-600" />
               </button>
             </div>
             
@@ -215,34 +215,34 @@ const StoreCard = ({ store }) => {
             </div>
             
             {/* Action Buttons */}
-            <div className="p-4 sm:p-6 border-t space-y-3">
+            <div className="p-4 sm:p-6 border-t border-gray-200 space-y-4 bg-gray-50 rounded-b-xl">
               <button 
                 onClick={handleGetDirections}
-                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
+                className="w-full bg-brand-blue text-white py-4 rounded-lg font-semibold hover:bg-blue-800 active:bg-blue-900 transition-colors flex items-center justify-center touch-manipulation min-h-[52px] focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 shadow-sm"
                 aria-label="Get directions to this store"
               >
                 <Navigation className="w-5 h-5 mr-2" />
                 Get Directions
               </button>
               
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <button 
                   onClick={handleViewOnMap}
-                  className="bg-gray-100 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center touch-manipulation min-h-[44px]"
+                  className="bg-white text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 active:bg-gray-100 transition-colors flex items-center justify-center touch-manipulation min-h-[48px] border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
                   aria-label="View store on map"
                 >
-                  <MapPin className="w-4 h-4 mr-1" />
+                  <MapPin className="w-4 h-4 mr-2" />
                   View Map
                 </button>
                 
                 <button 
                   onClick={handleCallStore}
-                  className="bg-green-100 text-green-700 py-3 rounded-lg font-medium hover:bg-green-200 transition-colors flex items-center justify-center touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+                  className="bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 active:bg-green-800 transition-colors flex items-center justify-center touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
                   disabled={!store.phone}
                   aria-label={store.phone ? `Call store at ${store.phone}` : 'Phone number not available'}
                 >
-                  <Phone className="w-4 h-4 mr-1" />
-                  Call Store
+                  <Phone className="w-4 h-4 mr-2" />
+                  {store.phone ? 'Call' : 'No Phone'}
                 </button>
               </div>
             </div>
@@ -252,44 +252,47 @@ const StoreCard = ({ store }) => {
 
       {/* Map Options Modal */}
       {showMapOptions && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setShowMapOptions(false)}>
-          <div className="bg-egg-shell rounded-lg max-w-sm w-full shadow-store" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="map-options-title">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm" onClick={() => setShowMapOptions(false)}>
+          <div className="bg-white rounded-xl max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="map-options-title">
             {/* Header */}
-            <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
-              <h3 id="map-options-title" className="text-lg sm:text-xl font-bold text-brand-blue">Choose Map App</h3>
+            <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-200 bg-gray-50 rounded-t-xl">
+              <h3 id="map-options-title" className="text-xl sm:text-2xl font-bold text-brand-blue">Choose Map App</h3>
               <button 
                 onClick={() => setShowMapOptions(false)}
-                className="bg-gray-200 hover:bg-gray-300 w-11 h-11 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation min-w-[44px] min-h-[44px]"
+                className="bg-gray-100 hover:bg-gray-200 active:bg-gray-300 w-12 h-12 rounded-full flex items-center justify-center transition-colors flex-shrink-0 touch-manipulation min-w-[48px] min-h-[48px] focus:outline-none focus:ring-2 focus:ring-brand-blue"
                 aria-label="Close map options"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6 text-gray-600" />
               </button>
             </div>
             
             {/* Map Options */}
-            <div className="p-4 sm:p-6 space-y-3">
+            <div className="p-5 sm:p-6 space-y-4 bg-white rounded-b-xl">
               <button 
                 onClick={() => openInMap('GOOGLE')}
-                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
+                className="w-full bg-brand-blue text-white py-4 rounded-lg font-semibold hover:bg-blue-800 active:bg-blue-900 transition-colors flex items-center justify-center touch-manipulation min-h-[52px] shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
                 aria-label="Open in Google Maps"
               >
-                🗺️ Google Maps
+                <span className="text-xl mr-3">🗺️</span>
+                Google Maps
               </button>
               
               <button 
                 onClick={() => openInMap('WAZE')}
-                className="w-full bg-bronze text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
+                className="w-full bg-bronze text-white py-4 rounded-lg font-semibold hover:bg-orange-600 active:bg-orange-700 transition-colors flex items-center justify-center touch-manipulation min-h-[52px] shadow-sm focus:outline-none focus:ring-2 focus:ring-bronze focus:ring-offset-2"
                 aria-label="Open in Waze"
               >
-                🚗 Waze
+                <span className="text-xl mr-3">🚗</span>
+                Waze
               </button>
               
               <button 
                 onClick={() => openInMap('APPLE')}
-                className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center touch-manipulation min-h-[48px]"
+                className="w-full bg-gray-800 text-white py-4 rounded-lg font-semibold hover:bg-gray-700 active:bg-gray-900 transition-colors flex items-center justify-center touch-manipulation min-h-[52px] shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2"
                 aria-label="Open in Apple Maps"
               >
-                🍎 Apple Maps
+                <span className="text-xl mr-3">🍎</span>
+                Apple Maps
               </button>
             </div>
           </div>

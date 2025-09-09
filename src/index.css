@@ -172,6 +172,44 @@ html, body {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
+  
+  /* Enhanced accessibility */
+  .focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+  }
+  
+  /* Better hover states for touch devices */
+  @media (hover: hover) {
+    .hover-scale:hover {
+      transform: scale(1.02);
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .store-card {
+      border: 2px solid currentColor;
+    }
+    
+    button {
+      border: 2px solid currentColor;
+    }
+  }
 
   /* Ken Burns zoom effect for hero slideshow */
   .ken-burns-zoom {
@@ -232,6 +270,24 @@ html, body {
       margin: 0.5rem;
       padding: 1rem;
     }
+    
+    /* Ensure proper touch targets on mobile */
+    button, .btn, [role="button"], input, select {
+      min-height: 48px;
+      min-width: 48px;
+    }
+    
+    /* Improve modal presentation on mobile */
+    .modal-content {
+      max-height: 85vh;
+      margin: 1rem;
+    }
+    
+    /* Better scrolling performance */
+    .scroll-container {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
   }
   
   /* Mobile-friendly spacing */
@@ -251,7 +307,7 @@ html, body {
     }
   }
   
-  /* Force Tailwind responsive classes to work on mobile */
+  /* Enhanced mobile responsiveness */
   @media (max-width: 639px) {
     .sm\:hidden {
       display: none !important;
@@ -259,6 +315,38 @@ html, body {
     
     .sm\:block {
       display: block !important;
+    }
+    
+    /* Better button spacing on mobile */
+    .mobile-btn-group {
+      gap: 0.75rem;
+    }
+    
+    /* Improved form controls */
+    input, select, textarea {
+      font-size: 16px !important;
+      padding: 1rem !important;
+      border-radius: 0.75rem !important;
+    }
+    
+    /* Better modal behavior */
+    [role="dialog"] {
+      margin: 0.5rem !important;
+      max-width: calc(100vw - 1rem) !important;
+    }
+    
+    /* Touch-friendly interactions */
+    .touch-target {
+      min-width: 48px !important;
+      min-height: 48px !important;
+      padding: 0.75rem !important;
+    }
+    
+    /* Prevent zoom on focus */
+    input:focus,
+    select:focus,
+    textarea:focus {
+      transform: scale(1) !important;
     }
     
     /* Ensure hero section text sizing works on mobile */
