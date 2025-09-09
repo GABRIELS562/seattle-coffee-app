@@ -92,17 +92,12 @@ const VirtualizedStoreList = ({ stores, maxHeight }) => {
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden shadow-sm bg-gray-50">
-      <List
-        height={listHeight}
-        itemCount={rowCount}
-        itemSize={itemHeight}
-        width="100%"
-        className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-        style={{ scrollbarWidth: 'thin' }}
-      >
-        {Row}
-      </List>
+    <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))' }}>
+      {stores.map(store => (
+        <div key={store.id || `${store.name}-${store.address}`} className="w-full">
+          <StoreCard store={store} />
+        </div>
+      ))}
     </div>
   );
 };
