@@ -104,21 +104,23 @@ const StoreCard = ({ store }) => {
           )}
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-auto pt-2">
-          <button 
-            onClick={() => setShowDetails(true)}
-            className="flex-1 bg-bronze text-white py-3 px-4 rounded-md text-sm font-semibold hover:bg-orange-600 active:bg-orange-700 transition-colors touch-manipulation min-h-[48px] focus:outline-none focus:ring-2 focus:ring-bronze focus:ring-offset-2 focus:ring-offset-brand-blue"
-            aria-label={`View details for ${store.name}`}
-          >
-            DETAILS
-          </button>
-          <button 
-            onClick={handleViewOnMap}
-            className="flex-1 border-2 border-bronze text-bronze py-3 px-4 rounded-md text-sm font-semibold hover:bg-bronze hover:text-white active:bg-orange-600 active:border-orange-600 transition-colors touch-manipulation min-h-[48px] focus:outline-none focus:ring-2 focus:ring-bronze focus:ring-offset-2 focus:ring-offset-brand-blue"
-            aria-label={`View ${store.name} on map`}
-          >
-            VIEW MAP
-          </button>
+        <div className="mt-auto pt-4">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button 
+              onClick={() => setShowDetails(true)}
+              className="flex-1 bg-bronze text-white py-3 px-4 rounded-md text-sm font-semibold hover:bg-orange-600 active:bg-orange-700 transition-colors touch-manipulation min-h-[48px] focus:outline-none focus:ring-2 focus:ring-bronze focus:ring-offset-2 focus:ring-offset-brand-blue"
+              aria-label={`View details for ${store.name}`}
+            >
+              DETAILS
+            </button>
+            <button 
+              onClick={handleViewOnMap}
+              className="flex-1 border-2 border-bronze text-bronze py-3 px-4 rounded-md text-sm font-semibold hover:bg-bronze hover:text-white active:bg-orange-600 active:border-orange-600 transition-colors touch-manipulation min-h-[48px] focus:outline-none focus:ring-2 focus:ring-bronze focus:ring-offset-2 focus:ring-offset-brand-blue"
+              aria-label={`View ${store.name} on map`}
+            >
+              VIEW MAP
+            </button>
+          </div>
         </div>
       </article>
 

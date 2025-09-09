@@ -424,6 +424,14 @@ html, body {
       height: calc(100vh - 300px) !important;
       min-height: 500px !important;
     }
+    
+    /* Additional mobile grid fixes */
+    .store-grid-container {
+      display: flex !important;
+      flex-direction: column !important;
+      grid-template-columns: unset !important;
+      gap: 1rem !important;
+    }
   }
 }
 
@@ -471,4 +479,148 @@ html, body {
 .store-container {
   width: 100%;
   height: 100%;
+}
+
+/* Mobile-first store grid layout - CRITICAL FIX */
+.store-grid-container {
+  display: grid !important;
+  width: 100% !important;
+  gap: 20px !important;
+}
+
+/* Mobile: Always single column */
+@media (max-width: 640px) {
+  .store-grid-container {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    padding: 0 !important;
+  }
+  
+  /* Ensure no grid items can break layout */
+  .store-grid-container > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  
+  /* Fix store card mobile layout */
+  .store-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Force proper mobile grid behavior */
+  .store-grid-container,
+  [style*="grid-template-columns"] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+  
+  /* Prevent any multi-column layouts on mobile */
+  .grid-cols-2,
+  .grid-cols-3,
+  .sm\:grid-cols-2,
+  .sm\:grid-cols-3,
+  .md\:grid-cols-2,
+  .md\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Tablet: Two columns */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .store-grid-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Desktop: Three columns */
+@media (min-width: 1024px) {
+  .store-grid-container {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Safari mobile specific fixes */
+@supports (-webkit-appearance: none) {
+  @media (max-width: 640px) {
+    .store-grid-container {
+      display: -webkit-box !important;
+      display: -webkit-flex !important;
+      display: flex !important;
+      -webkit-flex-direction: column !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+    
+    .store-grid-container > div {
+      width: 100% !important;
+      -webkit-flex: none !important;
+      flex: none !important;
+    }
+  }
+}
+
+/* Force mobile Safari to use proper layout */
+@media (max-width: 640px) {
+  /* Override any inline grid styles on mobile */
+  .store-grid-container[style] {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: unset !important;
+  }
+  
+  /* Ensure proper spacing */
+  .store-grid-container {
+    padding: 0 16px !important;
+  }
+  
+  /* Fix container width issues */
+  #store-locator {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Prevent horizontal overflow */
+  * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  img, video, embed, object {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Mobile Chrome/Safari specific layout fixes */
+  .store-grid-container.flex {
+    display: -webkit-box !important;
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-flex-direction: column !important;
+    flex-direction: column !important;
+  }
+  
+  /* Ensure all children take full width on mobile */
+  .store-grid-container.flex > div {
+    width: 100% !important;
+    -webkit-flex: none !important;
+    flex: none !important;
+  }
+  
+  /* Additional mobile viewport fixes */
+  #root, body, html {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Prevent any element from causing horizontal scroll */
+  .store-card, .store-card * {
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
 }

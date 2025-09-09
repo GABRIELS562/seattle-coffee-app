@@ -51,29 +51,31 @@ const VirtualizedStoreList = ({ stores, maxHeight }) => {
   const Row = useCallback(({ index, style }) => {
     const startIndex = index * columnCount;
     const items = [];
-    const gapClass = columnCount === 1 ? 'gap-6' : columnCount === 2 ? 'gap-6' : 'gap-6';
-    const paddingClass = columnCount === 1 ? 'px-4' : columnCount === 2 ? 'px-4' : 'px-4';
     
     for (let i = 0; i < columnCount; i++) {
       const storeIndex = startIndex + i;
       if (storeIndex < stores.length) {
         items.push(
-          <div key={storeIndex} className="flex-1">
+          <div key={storeIndex} className="w-full">
             <StoreCard store={stores[storeIndex]} />
           </div>
         );
-      } else {
-        // Add empty placeholder to maintain grid structure
+      } else if (columnCount > 1) {
+        // Add empty placeholder to maintain grid structure on desktop
         items.push(
-          <div key={`empty-${i}`} className="flex-1">
+          <div key={`empty-${i}`} className="w-full">
             {/* Empty placeholder */}
           </div>
         );
       }
     }
     
+    const gridClass = columnCount === 1 ? 'flex flex-col gap-4' :
+                      columnCount === 2 ? 'grid grid-cols-2 gap-5' :
+                      'grid grid-cols-3 gap-6';
+    
     return (
-      <div style={style} className={`flex ${gapClass} ${paddingClass} py-2`}>
+      <div style={style} className={`${gridClass} py-2 px-4 w-full`}>
         {items}
       </div>
     );
