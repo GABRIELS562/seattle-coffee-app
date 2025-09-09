@@ -453,7 +453,7 @@ const LocationsPage = () => {
               </div>
             ) : !hasLocation ? (
               /* When no location, show all stores with virtualization for large lists */
-              processedStores.length > 20 && showPaginated ? (
+              processedStores.length > 100 && showPaginated ? (
                 <VirtualizedStoreList key={`virtual-grid-${gridKey}`} stores={processedStores} />
               ) : (
                 <div key={`all-stores-grid-${gridKey}`} className={getGridClassName()}>
