@@ -65,7 +65,7 @@ const StoreCard = ({ store }) => {
   return (
     <>
       {/* Main Store Card */}
-      <article className="bg-brand-blue text-white p-4 sm:p-6 rounded-lg shadow-store hover:shadow-lg transition-all duration-200 hover:scale-[1.02] focus-within:ring-2 focus-within:ring-bronze focus-within:ring-offset-2 w-full h-full flex flex-col min-h-[280px] sm:min-h-[300px]">
+      <article className="bg-brand-blue text-white p-4 sm:p-6 rounded-lg shadow-store hover:shadow-lg transition-all duration-200 hover:scale-[1.02] focus-within:ring-2 focus-within:ring-bronze focus-within:ring-offset-2 w-full h-full flex flex-col min-h-[280px] sm:min-h-[300px] store-card">
         <div className="w-12 h-12 bg-bronze rounded-full mb-4 flex items-center justify-center">
           <span className="text-2xl" role="img" aria-label="Store category">
             {categoryIcon}
@@ -89,9 +89,11 @@ const StoreCard = ({ store }) => {
           )}
           
           {store.distance && (
-            <p className="text-green-300 text-sm font-semibold flex items-center">
-              <span className="mr-1">📏</span>
-              {store.distance.toFixed(1)} km away
+            <p className="text-green-300 text-sm font-bold flex items-center bg-brand-blue/20 px-2 py-1 rounded-md mt-1">
+              <span className="mr-1">📍</span>
+              {store.distance < 1 
+                ? `${(store.distance * 1000).toFixed(0)}m away` 
+                : `${store.distance.toFixed(1)}km away`}
             </p>
           )}
           

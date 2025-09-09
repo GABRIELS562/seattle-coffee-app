@@ -22,6 +22,14 @@ import {
   API_ENDPOINTS
 } from '../utils';
 
+// Import mobile testing utilities in development
+if (process.env.NODE_ENV === 'development') {
+  import('../utils/mobileTest').then(({ runMobileTestSuite }) => {
+    // Add mobile test to window for easy console access
+    window.testMobileUI = runMobileTestSuite;
+  });
+}
+
 const LocationsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState(''); // For immediate input display
@@ -225,7 +233,7 @@ const LocationsPage = () => {
       <header className="mb-6 sm:mb-8 lg:mb-12">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-blue mb-4 text-center leading-tight">Store Locations</h1>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-gray-600 text-base sm:text-lg">Find your nearest Seattle Coffee location</p>
+          <p className="text-gray-600 text-base sm:text-lg">Find your nearest coffee shop location</p>
           <button
             onClick={handleLocationRequest}
             disabled={locationLoading}
@@ -357,21 +365,72 @@ const LocationsPage = () => {
         </div>
       )}
 
-      {/* Store Grid */}
+      {/* Nearest Stores Section - Only show when location is detected */}
+      {hasLocation && processedStores.length > 0 && (
+        <section className="mb-8" aria-label="Nearest stores">
+          <div className="bg-gradient-to-r from-brand-blue to-blue-700 text-white p-4 sm:p-6 rounded-xl shadow-lg mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-2 flex items-center">
+              <MapPin className="w-5 h-5 mr-2" />
+              Nearest Stores to You
+            </h2>
+            <p className="text-egg-shell opacity-90 text-sm">
+              Top 5 closest locations based on your current position
+            </p>
+          </div>
+          
+          {/* Show top 5 nearest stores in a special layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            {processedStores.slice(0, 5).map((store, index) => (
+              <div key={store.id || `${store.name}-${store.address}`} className="relative">
+                {index === 0 && (
+                  <div className="absolute -top-2 -left-2 z-10 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
+                    Closest
+                  </div>
+                )}
+                <div className={`${index === 0 ? 'ring-2 ring-green-500 ring-offset-2' : ''} rounded-lg`}>
+                  <StoreCard store={store} />
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {processedStores.length > 5 && (
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                All Other Stores ({processedStores.length - 5} locations)
+              </h3>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Store Grid - Modified to show remaining stores when location is detected */}
       <section aria-label="Store listings">
         {processedStores.length > 0 ? (
           <Suspense fallback={<LoadingSpinner size="lg" message="Loading stores..." />}>
-            {processedStores.length > 20 && showPaginated ? (
-              <VirtualizedStoreList stores={processedStores} />
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
-                {processedStores.map(store => (
-                  <div key={store.id || `${store.name}-${store.address}`} className="w-full flex">
+            {/* When location is detected, show remaining stores */}
+            {hasLocation && processedStores.length > 5 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
+                {processedStores.slice(5).map(store => (
+                  <div key={store.id || `${store.name}-${store.address}`} className="w-full">
                     <StoreCard store={store} />
                   </div>
                 ))}
               </div>
-            )}
+            ) : !hasLocation ? (
+              /* When no location, show all stores with virtualization for large lists */
+              processedStores.length > 20 && showPaginated ? (
+                <VirtualizedStoreList stores={processedStores} />
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
+                  {processedStores.map(store => (
+                    <div key={store.id || `${store.name}-${store.address}`} className="w-full">
+                      <StoreCard store={store} />
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : null}
           </Suspense>
         ) : (
           <div className="text-center py-12">

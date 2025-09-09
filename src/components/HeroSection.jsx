@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 const HeroSection = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Images from the Seattle Coffee website slideshow
+  // High-quality coffee shop images from Pexels (free to use)
   const images = [
-    'https://cdn-jcbkh.nitrocdn.com/eHrJJfxhQMjgrsioXBOuZrKoZZBDtbCu/assets/images/optimized/rev-57de69f/www.seattlecoffeecompany.co.za/wp-content/uploads/2023/05/find-store-fi-1.jpg',
-    'https://cdn-jcbkh.nitrocdn.com/eHrJJfxhQMjgrsioXBOuZrKoZZBDtbCu/assets/images/optimized/rev-57de69f/www.seattlecoffeecompany.co.za/wp-content/uploads/2023/04/store-caro-fi-1.jpg',
-    'https://cdn-jcbkh.nitrocdn.com/eHrJJfxhQMjgrsioXBOuZrKoZZBDtbCu/assets/images/optimized/rev-57de69f/www.seattlecoffeecompany.co.za/wp-content/uploads/2023/04/store-caro-fi-2.jpg',
-    'https://cdn-jcbkh.nitrocdn.com/eHrJJfxhQMjgrsioXBOuZrKoZZBDtbCu/assets/images/optimized/rev-57de69f/www.seattlecoffeecompany.co.za/wp-content/uploads/2023/04/store-caro-fi-3.jpg',
-    'https://cdn-jcbkh.nitrocdn.com/eHrJJfxhQMjgrsioXBOuZrKoZZBDtbCu/assets/images/optimized/rev-57de69f/www.seattlecoffeecompany.co.za/wp-content/uploads/2023/04/store-caro-fi-4.jpg'
+    'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=1600', // Coffee being poured
+    'https://images.pexels.com/photos/1695052/pexels-photo-1695052.jpeg?auto=compress&cs=tinysrgb&w=1600', // Modern coffee shop interior
+    'https://images.pexels.com/photos/2074130/pexels-photo-2074130.jpeg?auto=compress&cs=tinysrgb&w=1600', // Barista making coffee
+    'https://images.pexels.com/photos/894695/pexels-photo-894695.jpeg?auto=compress&cs=tinysrgb&w=1600', // Coffee cups on table
+    'https://images.pexels.com/photos/1813466/pexels-photo-1813466.jpeg?auto=compress&cs=tinysrgb&w=1600' // Cozy coffee shop atmosphere
   ];
 
   useEffect(() => {
@@ -56,9 +56,9 @@ const HeroSection = () => {
         
         <div className="max-w-2xl mx-auto w-full">
           <p className="text-sm xs:text-base sm:text-xl md:text-2xl leading-relaxed text-shadow-md opacity-95 mb-6 sm:mb-8">
-            We have café stores nationwide, as well as partnerships with FreshStop, 
-            Sasol Delight, Food Lover's Market and Food Lover's Eatery. So rest assured 
-            that a fix of your favourite beverage is just around the corner.
+            Discover coffee shops across the city. From cozy neighborhood cafés to modern 
+            espresso bars, find the perfect spot for your daily brew. Your favorite 
+            coffee experience is just around the corner.
           </p>
           
           <button

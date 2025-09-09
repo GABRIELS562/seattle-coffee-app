@@ -3,7 +3,7 @@ import { FixedSizeList as List } from 'react-window';
 import StoreCard from './StoreCard';
 import { MapPin } from 'lucide-react';
 
-const VirtualizedStoreList = ({ stores }) => {
+const VirtualizedStoreList = ({ stores, maxHeight }) => {
   const [listHeight, setListHeight] = useState(600);
   const [itemHeight, setItemHeight] = useState(320);
   const [columnCount, setColumnCount] = useState(1);
@@ -15,27 +15,30 @@ const VirtualizedStoreList = ({ stores }) => {
       const availableWidth = width - padding;
       
       let columns = 1;
-      let height = 320; // Increased base height for better content display
+      let height = 280; // Optimized height for better density
       
       if (width >= 1024) {
         columns = 3;
-        height = 340;
+        height = 300;
       } else if (width >= 640) {
         columns = 2;
-        height = 330;
+        height = 290;
       } else {
         columns = 1;
-        height = 320; // Adequate height for mobile content
+        height = 280; // Compact height for mobile
       }
       
       setColumnCount(columns);
       setItemHeight(height);
       
-      // Better responsive height calculation
-      const headerHeight = width < 640 ? 350 : 400;
+      // Better responsive height calculation with more available space
+      const headerHeight = width < 640 ? 250 : 300; // Reduced header offset
       const availableHeight = window.innerHeight - headerHeight;
-      const minHeight = width < 640 ? 400 : 500;
-      setListHeight(Math.max(minHeight, availableHeight));
+      const minHeight = width < 640 ? 500 : 600;
+      const calculatedHeight = Math.max(minHeight, availableHeight * 0.8); // Use 80% of available space
+      
+      // If maxHeight prop is provided, use it as upper limit
+      setListHeight(maxHeight ? Math.min(calculatedHeight, maxHeight) : calculatedHeight);
     };
 
     updateDimensions();
@@ -48,8 +51,8 @@ const VirtualizedStoreList = ({ stores }) => {
   const Row = useCallback(({ index, style }) => {
     const startIndex = index * columnCount;
     const items = [];
-    const gapClass = columnCount === 1 ? 'gap-3' : columnCount === 2 ? 'gap-4' : 'gap-6';
-    const paddingClass = columnCount === 1 ? 'px-2' : columnCount === 2 ? 'px-3' : 'px-4';
+    const gapClass = columnCount === 1 ? 'gap-4' : columnCount === 2 ? 'gap-4' : 'gap-6';
+    const paddingClass = columnCount === 1 ? 'px-4' : columnCount === 2 ? 'px-3' : 'px-4';
     
     for (let i = 0; i < columnCount; i++) {
       const storeIndex = startIndex + i;
@@ -70,7 +73,7 @@ const VirtualizedStoreList = ({ stores }) => {
     }
     
     return (
-      <div style={style} className={`flex ${gapClass} ${paddingClass} py-3`}>
+      <div style={style} className={`flex ${gapClass} ${paddingClass} py-2`}>
         {items}
       </div>
     );
@@ -87,15 +90,18 @@ const VirtualizedStoreList = ({ stores }) => {
   }
 
   return (
-    <List
-      height={listHeight}
-      itemCount={rowCount}
-      itemSize={itemHeight}
-      width="100%"
-      className="scrollbar-thin"
-    >
-      {Row}
-    </List>
+    <div className="border rounded-lg overflow-hidden shadow-sm bg-gray-50">
+      <List
+        height={listHeight}
+        itemCount={rowCount}
+        itemSize={itemHeight}
+        width="100%"
+        className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        style={{ scrollbarWidth: 'thin' }}
+      >
+        {Row}
+      </List>
+    </div>
   );
 };
 

@@ -22,8 +22,8 @@ const TopBar = () => {
 						<div className="flex justify-between h-12 sm:h-16 items-center">
 							<div className="flex-shrink-0">
 								<h1 className="text-base xs:text-lg sm:text-xl lg:text-2xl font-helvetica font-semibold text-white text-shadow-md">
-									<span className="hidden xs:inline">SEATTLE COFFEE CO</span>
-									<span className="xs:hidden">☕ SEATTLE</span>
+									<span className="hidden xs:inline">MY COFFEE FINDER APP</span>
+									<span className="xs:hidden">☕ MY COFFEE</span>
 								</h1>
 							</div>
 							<div className="text-xs sm:text-sm text-white/90 font-medium text-shadow-sm">
@@ -47,8 +47,8 @@ const TopBar = () => {
 					<div className="flex justify-between h-12 sm:h-14 items-center">
 						<div className="flex-shrink-0">
 							<h1 className="text-base xs:text-lg sm:text-xl font-helvetica font-semibold text-white">
-								<span className="hidden xs:inline">SEATTLE COFFEE CO</span>
-								<span className="xs:hidden">☕ SEATTLE</span>
+								<span className="hidden xs:inline">MY COFFEE FINDER APP</span>
+								<span className="xs:hidden">☕ MY COFFEE</span>
 							</h1>
 						</div>
 						<div className="text-xs sm:text-sm text-white/90 font-medium">

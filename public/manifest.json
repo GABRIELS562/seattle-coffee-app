@@ -1,7 +1,7 @@
 {
-  "short_name": "Seattle Coffee",
-  "name": "Seattle Coffee Store Locator",
-  "description": "Find your nearest Seattle Coffee location across South Africa",
+  "short_name": "Coffee Finder",
+  "name": "Coffee Shop Store Locator",
+  "description": "Find your nearest coffee shop location",
   "icons": [
     {
       "src": "favicon.ico",
