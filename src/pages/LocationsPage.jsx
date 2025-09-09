@@ -30,6 +30,13 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+// Grid style to ensure consistent spacing
+const gridStyle = {
+  display: 'grid',
+  gap: '20px',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))'
+};
+
 const LocationsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState(''); // For immediate input display
@@ -40,6 +47,7 @@ const LocationsPage = () => {
   const [error, setError] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPaginated, setShowPaginated] = useState(true);
+  const [gridKey, setGridKey] = useState(0); // Force re-render of grids
 
   const { userLocation, locationLoading, locationError, requestLocation, clearLocation, hasLocation } = useLocation();
 
@@ -121,6 +129,13 @@ const LocationsPage = () => {
     loadStores();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Force grid re-render when stores are loaded
+  useEffect(() => {
+    if (stores.length > 0 && !loading) {
+      // Force a re-render of grids after initial load
+      setGridKey(prev => prev + 1);
+    }
+  }, [stores.length, loading]);
 
   // Handle location request with proper error handling
   const handleLocationRequest = useCallback(async () => {
@@ -379,7 +394,7 @@ const LocationsPage = () => {
           </div>
           
           {/* Show top 5 nearest stores in a special layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div key={`nearest-grid-${gridKey}`} className="mb-8" style={gridStyle}>
             {processedStores.slice(0, 5).map((store, index) => (
               <div key={store.id || `${store.name}-${store.address}`} className="relative">
                 {index === 0 && (
@@ -410,7 +425,7 @@ const LocationsPage = () => {
           <Suspense fallback={<LoadingSpinner size="lg" message="Loading stores..." />}>
             {/* When location is detected, show remaining stores */}
             {hasLocation && processedStores.length > 5 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+              <div key={`remaining-grid-${gridKey}`} className="w-full" style={gridStyle}>
                 {processedStores.slice(5).map(store => (
                   <div key={store.id || `${store.name}-${store.address}`} className="w-full">
                     <StoreCard store={store} />
@@ -420,9 +435,9 @@ const LocationsPage = () => {
             ) : !hasLocation ? (
               /* When no location, show all stores with virtualization for large lists */
               processedStores.length > 20 && showPaginated ? (
-                <VirtualizedStoreList stores={processedStores} />
+                <VirtualizedStoreList key={`virtual-grid-${gridKey}`} stores={processedStores} />
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <div key={`all-stores-grid-${gridKey}`} className="w-full" style={gridStyle}>
                   {processedStores.map(store => (
                     <div key={store.id || `${store.name}-${store.address}`} className="w-full">
                       <StoreCard store={store} />
