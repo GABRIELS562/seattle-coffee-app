@@ -22,7 +22,74 @@ body {
   line-height: 1.5;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  touch-action: pan-y;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Root element fixes for mobile */
+#root {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Prevent iOS zoom on form inputs */
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* Ensure full width on mobile */
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Ensure buttons are touch-friendly */
+  button, .btn, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve tap targets */
+  a, button, input, select, textarea {
+    touch-action: manipulation;
+  }
+  
+  /* Force hero section to be visible on mobile */
+  .hero-section, 
+  section[class*="relative"]:first-of-type {
+    display: flex !important;
+    min-height: 50vh !important;
+    height: 70vh !important;
+  }
+  
+  /* Ensure mobile viewport works correctly */
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  html {
+    height: -webkit-fill-available;
+  }
 }
 
 @layer components {
@@ -138,6 +205,84 @@ body {
   @media (max-height: 600px) {
     .hero-section {
       height: 600px;
+    }
+  }
+  
+  /* Mobile hero adjustments - Enhanced */
+  @media (max-width: 640px) {
+    .hero-section {
+      height: 70vh !important;
+      min-height: 400px !important;
+      display: flex !important;
+      width: 100% !important;
+    }
+    
+    /* Fix for iOS Safari viewport issues */
+    @supports (-webkit-touch-callout: none) {
+      .hero-section {
+        height: -webkit-fill-available !important;
+        min-height: 50vh !important;
+      }
+    }
+  }
+  
+  /* Improve mobile card layouts */
+  @media (max-width: 640px) {
+    .store-card {
+      margin: 0.5rem;
+      padding: 1rem;
+    }
+  }
+  
+  /* Mobile-friendly spacing */
+  .mobile-spacing {
+    padding: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .mobile-spacing {
+      padding: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .mobile-spacing {
+      padding: 2rem;
+    }
+  }
+  
+  /* Force Tailwind responsive classes to work on mobile */
+  @media (max-width: 639px) {
+    .sm\:hidden {
+      display: none !important;
+    }
+    
+    .sm\:block {
+      display: block !important;
+    }
+    
+    /* Ensure hero section text sizing works on mobile */
+    .sm\:text-5xl,
+    .md\:text-6xl,
+    .lg\:text-7xl {
+      font-size: 2.25rem !important; /* Equivalent to text-4xl for mobile */
+      line-height: 2.5rem !important;
+    }
+    
+    .sm\:text-xl,
+    .md\:text-2xl {
+      font-size: 1.125rem !important; /* Equivalent to text-lg for mobile */
+      line-height: 1.75rem !important;
+    }
+    
+    .sm\:mb-6,
+    .sm\:mb-8 {
+      margin-bottom: 1rem !important; /* Equivalent to mb-4 for mobile */
+    }
+    
+    .sm\:py-4,
+    .sm\:px-8 {
+      padding: 0.75rem 1.5rem !important; /* Smaller padding on mobile */
     }
   }
 }
